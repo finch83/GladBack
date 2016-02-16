@@ -10,7 +10,8 @@ class TaskItemBase : public QObject
 {
     Q_OBJECT
 public:
-    TaskItemBase(const QString&,const QString&,const QTime&);
+    TaskItemBase(QObject* pobj = 0) : QObject(pobj){}
+//    TaskItemBase(const QString&,const QString&,const QTime&);
     virtual ~TaskItemBase();
 
 //Set
@@ -34,8 +35,9 @@ protected:
 class TaskItemFiFo : public TaskItemBase
 {
 public:
-    TaskItemFiFo(const QString&, const QString&, const QTime&);
-    ~TaskItemFiFo();
+    TaskItemFiFo(){}
+//    TaskItemFiFo(const QString&, const QString&, const QTime&);
+    ~TaskItemFiFo(){}
 
 //Set
     void setKeepDays(int);

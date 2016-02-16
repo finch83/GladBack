@@ -3,12 +3,15 @@
 #include <QDir>
 #include <QMap>
 #include <QTextStream>
+#include <QVector>
 
 //C-tor
+/*
 TaskItemBase::TaskItemBase(const QString& _name, const QString& _path, const QTime& _start) :
             m_strName(_name),
             m_strPath(_path),
             m_tmeStartTime(_start){}
+*/
 
 //D-tor
 TaskItemBase::~TaskItemBase(){}
@@ -34,11 +37,13 @@ QTime TaskItemBase::getStartTime() const
 
 
 //C-tor
+/*
 TaskItemFiFo::TaskItemFiFo(const QString& _name, const QString& _path, const QTime& _start):
             TaskItemBase(_name, _path, _start) {}
 
-TaskItemFiFo::~TaskItemFiFo() {}
 
+TaskItemFiFo::~TaskItemFiFo() {}
+*/
 
 //Setters
 void TaskItemFiFo::setKeepDays(int _days)
@@ -96,6 +101,19 @@ void TaskVector::pushTasks()
 {
     openFile();
     QTextStream txtStream(m_pfleSettings);
+    QString tmpType;
+    m_pvectTasks    = new QVector<TaskItemBase*>;
+    while ( !txtStream.atEnd() ){
+        tmpType = txtStream.readLine();
+        if ( tmpType == QString("FiFo") ){
+            TaskItemFiFo* pfifo = new TaskItemFiFo;
+            pfifo->setName(txtStream.readLine());
+            pfifo->setPath(txtStream.readLine());
+            pfifo->setKeepDays(txtStream.readLine().toInt());
+            pfifo->setStartTime(QTime::fromString(txtStream.readLine()));
+            m_pvectTasks->push_back(pfifo);
+        }
+    }
 /*
     int counter = 0;
     QString     tmpName;
