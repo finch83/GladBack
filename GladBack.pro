@@ -9,9 +9,13 @@ QMAKE_CFLAGS = -Wall -Wextra -Werror
 
 
 HEADERS += \
-    taskitembase.h
+    zbc_gb_core.h \
+    zbc_gb_log.h \
+    zbc_gb_taskitembase.h
 
 SOURCES += \
-    taskitembase.cpp \
-    main.cpp
+    main.cpp \
+    zbc_gb_core.cpp \
+    zbc_gb_log.cpp \
+    zbc_gb_taskitembase.cpp
 
