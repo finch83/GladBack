@@ -1,6 +1,7 @@
 #include <QDebug>
 
 #include "zbc_gb_taskitembase.h"
+#include "zbc_gb_log.h"
 
 #include <QDir>
 #include <QMap>
@@ -75,13 +76,19 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
         it.previous();
         if(counter > numberOfFiles){
             if ( QFile::remove(it.value()) )
-                qDebug() << QTime::currentTime().toString()
-                         << "Success: Remove: "
-                         << it.value();
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                                           ZBC_GB_Log::REMOVE,
+                                           it.value());
+//                qDebug() << QTime::currentTime().toString()
+//                         << "Success: Remove: "
+//                         << it.value();
             else
-                qDebug() << QTime::currentTime().toString()
-                         << "Error: Remove: "
-                         << it.value();
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                           ZBC_GB_Log::REMOVE,
+                                           it.value());
+//                qDebug() << QTime::currentTime().toString()
+//                         << "Error: Remove: "
+//                         << it.value();
         }
         ++counter;
     }
