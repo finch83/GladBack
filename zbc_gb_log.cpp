@@ -61,14 +61,6 @@ void ZBC_GB_Log::log(STATUS _status, OPERATION _operation, QString _sInfo)
     outStream << " ";
     outStream << _sInfo;
     outStream << "\n";
-
-//    m_pfleLog->write(QTime::currentTime().toString());// +
-//                     " " +
-//                     m_mapEnumStatus->value(_status) +
-//                     " " +
-//                     m_mapEnumOperation->value(_operation)) +
-//                     _sInfo
-//            );
 }
 
 

@@ -79,16 +79,10 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
                 ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
                                            ZBC_GB_Log::REMOVE,
                                            it.value());
-//                qDebug() << QTime::currentTime().toString()
-//                         << "Success: Remove: "
-//                         << it.value();
             else
                 ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
                                            ZBC_GB_Log::REMOVE,
                                            it.value());
-//                qDebug() << QTime::currentTime().toString()
-//                         << "Error: Remove: "
-//                         << it.value();
         }
         ++counter;
     }
@@ -119,15 +113,15 @@ bool ZBC_GB_TaskVector::openFile()
         m_pfleSettings->close();
     m_pfleSettings->setFileName(m_strSettingsPath);
         if( m_pfleSettings->open(QIODevice::ReadOnly | QIODevice::Text)){
-            qDebug() << QTime::currentTime().toString()
-                     << "Success: Open: settings file "
-                     << m_strSettingsPath;
+            ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                                       ZBC_GB_Log::OPEN,
+                                       QDir::toNativeSeparators(m_strSettingsPath));
             return true;
         }
         else{
-            qDebug() << QTime::currentTime().toString()
-                     << "Error: Open: settings file "
-                     << m_strSettingsPath;
+            ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                       ZBC_GB_Log::OPEN,
+                                       QDir::toNativeSeparators(m_strSettingsPath));
             return false;
         }
 }
@@ -137,7 +131,9 @@ bool ZBC_GB_TaskVector::openFile()
 void ZBC_GB_TaskVector::pushTasks()
 {
     if ( !openFile() ){
-        qDebug() << QTime::currentTime().toString()  << "Error: Push: task";
+        ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                   ZBC_GB_Log::PUSH,
+                                   QString(" task"));
         return;
     }
     if (!m_pvectTasks->isEmpty())
@@ -167,10 +163,7 @@ void ZBC_GB_TaskVector::checkTimeOfTasks()
     qDebug() << QTime::currentTime().toString();
     for( QVector<ZBC_GB_TaskItemBase*>::iterator it = m_pvectTasks->begin();
                                                  it != m_pvectTasks->end();
-                                                 ++it){
-        if ( (*it)->getStartTime().toString() == QTime::currentTime().toString() ){
-            qDebug() << (*it)->getName();
+                                                 ++it)
+        if ( (*it)->getStartTime().toString() == QTime::currentTime().toString() )
             (*it)->removeFiles();
-        }
-    }
 }
