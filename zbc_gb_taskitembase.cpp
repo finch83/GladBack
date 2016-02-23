@@ -39,12 +39,11 @@ QTime ZBC_GB_TaskItemBase::getStartTime() const
 { return m_tmeStartTime; }
 
 
-//Setters
+//Setter
 void ZBC_GB_TaskItemFiFo::setKeepDays(int _days)
 { m_nKeepDays = _days; }
 
-
-//Getters
+//Getter
 int ZBC_GB_TaskItemFiFo::getKeepDays() const
 { return m_nKeepDays; }
 
@@ -71,10 +70,9 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
     QMapIterator<QDateTime, QString> it(mDateFile);
     it.toBack();
     counter = 1;
-    int                         numberOfFiles = getKeepDays();
     while( it.hasPrevious() ){
         it.previous();
-        if(counter > numberOfFiles){
+        if(counter > getKeepDays()){
             if ( QFile::remove(it.value()) )
                 ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
                                            ZBC_GB_Log::REMOVE,
@@ -89,11 +87,44 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
 }
 
 
+//##########
+//C-tor
+ZBC_GB_TaskItemGFS::ZBC_GB_TaskItemGFS(QObject *pobj) : ZBC_GB_TaskItemBase(pobj){
+    m_pvecKeepTime              = new QVector<int>(0);
+}
+
+
+//D-tor
+ZBC_GB_TaskItemGFS::~ZBC_GB_TaskItemGFS()
+{
+    m_pvecKeepTime->clear();
+    delete m_pvecKeepTime;
+}
+
+
+//Set vector of times for GFS
+void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
+{
+    m_pvecKeepTime->clear();
+    m_pvecKeepTime->push_back(_d);
+    m_pvecKeepTime->push_back(_w);
+    m_pvecKeepTime->push_back(_m);
+}
+
+
+//Get vector of times for GFS
+QVector<int> ZBC_GB_TaskItemGFS::getKeepTime()
+{
+    return *m_pvecKeepTime;
+}
+
+
+//##########
 //C-tor
 ZBC_GB_TaskVector::ZBC_GB_TaskVector(QObject* pobj) : QObject(pobj)
 {
     m_pfleSettings          = new QFile(this);
-    m_pvectTasks            = new QVector<ZBC_GB_TaskItemBase*>;
+    m_pvectTasks            = new QVector<ZBC_GB_TaskItemBase*>(0);
 }
 
 
@@ -139,10 +170,8 @@ void ZBC_GB_TaskVector::pushTasks()
     if (!m_pvectTasks->isEmpty())
         m_pvectTasks->clear();
     QTextStream txtStream(m_pfleSettings);
-    QString tmpType;
     while ( !txtStream.atEnd() ){
-        tmpType = txtStream.readLine();
-        if ( tmpType == QString("FiFo") ){
+        if (txtStream.readLine() == QString("FiFo")){
             ZBC_GB_TaskItemFiFo* pfifo = new ZBC_GB_TaskItemFiFo(this);
             pfifo->setName(txtStream.readLine());
             pfifo->setPath(txtStream.readLine());
@@ -152,6 +181,23 @@ void ZBC_GB_TaskVector::pushTasks()
                 m_pvectTasks->push_back(pfifo);
             else
                 delete pfifo;
+        }
+        if (txtStream.readLine() == QString("GFS"))
+        {
+            ZBC_GB_TaskItemGFS* pgfs = new ZBC_GB_TaskItemGFS(this);
+            pgfs->setName(txtStream.readLine());
+            pgfs->setPath(txtStream.readLine());
+            pgfs->setKeepTime(txtStream.readLine().toInt(),
+                              txtStream.readLine().toInt(),
+                              txtStream.readLine().toInt());
+            pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
+            if (pgfs->isGood()){
+                m_pvectTasks->push_back(pgfs);
+                qDebug() << pgfs->getKeepTime();
+            }
+            else
+                delete pgfs;
+
         }
     }
 }

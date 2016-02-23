@@ -6,6 +6,9 @@
 
 class QFile;
 
+typedef QVector<int> VecInt;
+
+//
 class ZBC_GB_TaskItemBase : public QObject
 {
     Q_OBJECT
@@ -31,6 +34,7 @@ public:
 
 
 
+//
 class ZBC_GB_TaskItemFiFo : public ZBC_GB_TaskItemBase
 {
     Q_OBJECT
@@ -49,6 +53,27 @@ private:
 
 
 
+//
+class ZBC_GB_TaskItemGFS : public ZBC_GB_TaskItemBase
+{
+    Q_OBJECT
+public:
+    ZBC_GB_TaskItemGFS(QObject* pobj = 0);
+    ~ZBC_GB_TaskItemGFS();
+
+    void setKeepTime(int, int, int);
+    VecInt  getKeepTime();
+
+    void removeFiles(){}
+
+private:
+    VecInt*                             m_pvecKeepTime;
+
+};
+
+
+
+//
 class ZBC_GB_TaskVector : public QObject
 {
     Q_OBJECT
