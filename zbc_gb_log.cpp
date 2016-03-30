@@ -30,6 +30,9 @@ ZBC_GB_Log::ZBC_GB_Log(QObject *parent) : QObject(parent)
     m_mapEnumOperation->insert(0, QString("OPEN"));
     m_mapEnumOperation->insert(1, QString("PUSH"));
     m_mapEnumOperation->insert(2, QString("REMOVE"));
+
+//    qDebug() << *m_mapEnumStatus;
+//    qDebug() << *m_mapEnumOperation;
 }
 
 
@@ -53,6 +56,8 @@ ZBC_GB_Log& ZBC_GB_Log::Instance()
 void ZBC_GB_Log::log(STATUS _status, OPERATION _operation, QString _sInfo)
 {
     QTextStream     outStream(m_pfleLog);
+    outStream << QDate::currentDate().toString(Qt::ISODate);
+    outStream << " ";
     outStream << QTime::currentTime().toString();
     outStream << " ";
     outStream << m_mapEnumStatus->value(_status);

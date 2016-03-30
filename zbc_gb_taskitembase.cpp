@@ -53,7 +53,7 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
 {
 //Create map of files for current task
     QMap<QDateTime, QString>    mDateFile;
-    QDir                        dir( getPath() );
+    QDir                        dir( this->getPath() );
     dir.setNameFilters(QStringList(QString("*.zip;*.rar").split(QString(";"))));
     QStringList                 listOfFiles;
     listOfFiles = dir.entryList();
@@ -61,7 +61,7 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
     QString                     tmpFileName;
     for(counter = 0; counter != listOfFiles.size(); ++counter)
     {
-        tmpFileName = getPath() + listOfFiles[counter];
+        tmpFileName = this->getPath() + listOfFiles[counter];
         mDateFile.insert(QFileInfo(tmpFileName).lastModified(),
                          tmpFileName);
     }
@@ -90,7 +90,7 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
 //##########
 //C-tor
 ZBC_GB_TaskItemGFS::ZBC_GB_TaskItemGFS(QObject *pobj) : ZBC_GB_TaskItemBase(pobj){
-    m_pvecKeepTime              = new QVector<int>(0);
+    m_pvecKeepTime              = new QVector<unsigned>(3);
 }
 
 
@@ -102,10 +102,31 @@ ZBC_GB_TaskItemGFS::~ZBC_GB_TaskItemGFS()
 }
 
 
+void ZBC_GB_TaskItemGFS::setKeepDays(unsigned _d)
+{
+    *(m_pvecKeepTime + 1) = _d;
+}
+
+
+void ZBC_GB_TaskItemGFS::setKeepWeeks(unsigned _w)
+{
+    *m_pvecKeepTime[1] = _w;
+}
+
+
+void ZBC_GB_TaskItemGFS::setKeepMonthes(unsigned _m)
+{
+    *m_pvecKeepTime[2] = _m;
+}
+
+
 //Set vector of times for GFS
 void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
 {
     m_pvecKeepTime->clear();
+    qDebug() << _d;
+    qDebug() << _w;
+    qDebug() << _m;
     m_pvecKeepTime->push_back(_d);
     m_pvecKeepTime->push_back(_w);
     m_pvecKeepTime->push_back(_m);
@@ -187,9 +208,16 @@ void ZBC_GB_TaskVector::pushTasks()
             ZBC_GB_TaskItemGFS* pgfs = new ZBC_GB_TaskItemGFS(this);
             pgfs->setName(txtStream.readLine());
             pgfs->setPath(txtStream.readLine());
-            pgfs->setKeepTime(txtStream.readLine().toInt(),
-                              txtStream.readLine().toInt(),
-                              txtStream.readLine().toInt());
+
+            //Debug start
+            pgfs->setKeepDays(txtStream.readLine().toInt());
+            pgfs->setKeepWeeks(txtStream.readLine().toInt());
+            pgfs->setKeepMonthes(txtStream.readLine().toInt());
+            //Debug end
+
+//            pgfs->setKeepTime(txtStream.readLine().toInt(),
+//                              txtStream.readLine().toInt(),
+//                              txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
             if (pgfs->isGood()){
                 m_pvectTasks->push_back(pgfs);

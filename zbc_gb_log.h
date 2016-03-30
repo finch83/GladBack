@@ -14,8 +14,8 @@ private:
     static const QString        m_strFileName;
     static ZBC_GB_Log           m_logInstance;
     QFile*                      m_pfleLog;
-    MapIntStr*                       m_mapEnumStatus;
-    MapIntStr*                       m_mapEnumOperation;
+    MapIntStr*                  m_mapEnumStatus;
+    MapIntStr*                  m_mapEnumOperation;
 
     ZBC_GB_Log(QObject *parent = 0);
     ~ZBC_GB_Log();
@@ -26,10 +26,6 @@ public:
 
     static ZBC_GB_Log& Instance();
     void log(STATUS, OPERATION, QString);
-
-signals:
-
-public slots:
 };
 
 #endif // ZBC_GB_LOG_H
