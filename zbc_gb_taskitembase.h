@@ -16,6 +16,8 @@ private:
     QString             m_strName;
     QString             m_strPath;
     QTime               m_tmeStartTime;
+
+protected:
     bool                m_bGoog;
 
 public:

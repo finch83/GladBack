@@ -11,7 +11,13 @@
 
 //Settrers
 void ZBC_GB_TaskItemBase::setName(const QString& _name)
-{ m_strName = _name; }
+{
+    if (_name != "")
+        m_strName = _name;
+    else
+        m_bGoog = false;
+
+}
 
 void ZBC_GB_TaskItemBase::setPath(const QString& _path)
 {
@@ -41,7 +47,12 @@ QTime ZBC_GB_TaskItemBase::getStartTime() const
 
 //Setter
 void ZBC_GB_TaskItemFiFo::setKeepDays(int _days)
-{ m_nKeepDays = _days; }
+{
+    if (_days >= 0)
+        m_nKeepDays = _days;
+    else
+        m_bGoog = false;
+}
 
 //Getter
 int ZBC_GB_TaskItemFiFo::getKeepDays() const
