@@ -104,19 +104,19 @@ ZBC_GB_TaskItemGFS::~ZBC_GB_TaskItemGFS()
 
 void ZBC_GB_TaskItemGFS::setKeepDays(unsigned _d)
 {
-    *(m_pvecKeepTime + 1) = _d;
+//    *(m_pvecKeepTime + 1) = _d;
 }
 
 
 void ZBC_GB_TaskItemGFS::setKeepWeeks(unsigned _w)
 {
-    *m_pvecKeepTime[1] = _w;
+//    *m_pvecKeepTime[1] = _w;
 }
 
 
 void ZBC_GB_TaskItemGFS::setKeepMonthes(unsigned _m)
 {
-    *m_pvecKeepTime[2] = _m;
+//    *m_pvecKeepTime[2] = _m;
 }
 
 
@@ -134,7 +134,7 @@ void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
 
 
 //Get vector of times for GFS
-QVector<int> ZBC_GB_TaskItemGFS::getKeepTime()
+VecInt ZBC_GB_TaskItemGFS::getKeepTime()
 {
     return *m_pvecKeepTime;
 }
