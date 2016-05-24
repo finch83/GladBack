@@ -66,7 +66,7 @@ public:
     void setKeepDays(unsigned);
     void setKeepWeeks(unsigned);
     void setKeepMonthes(unsigned);
-    void setKeepTime(int, int, int);
+//    void setKeepTime(int, int, int);
     VecInt  getKeepTime();
 
     void removeFiles(){}

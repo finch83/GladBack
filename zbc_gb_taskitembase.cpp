@@ -101,7 +101,7 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
 //##########
 //C-tor
 ZBC_GB_TaskItemGFS::ZBC_GB_TaskItemGFS(QObject *pobj) : ZBC_GB_TaskItemBase(pobj){
-    m_pvecKeepTime              = new QVector<unsigned>(3);
+    m_pvecKeepTime              = new QVector<unsigned>(0);
 }
 
 
@@ -115,23 +115,24 @@ ZBC_GB_TaskItemGFS::~ZBC_GB_TaskItemGFS()
 
 void ZBC_GB_TaskItemGFS::setKeepDays(unsigned _d)
 {
-//    *(m_pvecKeepTime + 1) = _d;
+    m_pvecKeepTime->push_back(_d);
 }
 
 
 void ZBC_GB_TaskItemGFS::setKeepWeeks(unsigned _w)
 {
-//    *m_pvecKeepTime[1] = _w;
+    m_pvecKeepTime->push_back(_w);
 }
 
 
 void ZBC_GB_TaskItemGFS::setKeepMonthes(unsigned _m)
 {
-//    *m_pvecKeepTime[2] = _m;
+    m_pvecKeepTime->push_back(_m);
 }
 
 
 //Set vector of times for GFS
+/*
 void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
 {
     m_pvecKeepTime->clear();
@@ -142,7 +143,7 @@ void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
     m_pvecKeepTime->push_back(_w);
     m_pvecKeepTime->push_back(_m);
 }
-
+*/
 
 //Get vector of times for GFS
 VecInt ZBC_GB_TaskItemGFS::getKeepTime()
@@ -151,8 +152,9 @@ VecInt ZBC_GB_TaskItemGFS::getKeepTime()
 }
 
 
-//##########
-//C-tor
+// ##########
+// ZBC_GB_TaskVector
+// C-tor
 ZBC_GB_TaskVector::ZBC_GB_TaskVector(QObject* pobj) : QObject(pobj)
 {
     m_pfleSettings          = new QFile(this);
@@ -219,20 +221,13 @@ void ZBC_GB_TaskVector::pushTasks()
             ZBC_GB_TaskItemGFS* pgfs = new ZBC_GB_TaskItemGFS(this);
             pgfs->setName(txtStream.readLine());
             pgfs->setPath(txtStream.readLine());
-
-            //Debug start
             pgfs->setKeepDays(txtStream.readLine().toInt());
             pgfs->setKeepWeeks(txtStream.readLine().toInt());
             pgfs->setKeepMonthes(txtStream.readLine().toInt());
-            //Debug end
-
-//            pgfs->setKeepTime(txtStream.readLine().toInt(),
-//                              txtStream.readLine().toInt(),
-//                              txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
             if (pgfs->isGood()){
                 m_pvectTasks->push_back(pgfs);
-                qDebug() << pgfs->getKeepTime();
+//                qDebug() << pgfs->getKeepTime();
             }
             else
                 delete pgfs;
