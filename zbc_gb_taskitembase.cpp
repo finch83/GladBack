@@ -66,13 +66,11 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
     QMap<QDateTime, QString>    mDateFile;
     QDir                        dir( this->getPath() );
     dir.setNameFilters(QStringList(QString("*.zip;*.rar").split(QString(";"))));
-    QStringList                 listOfFiles;
-    listOfFiles = dir.entryList();
     int                         counter = 0;
     QString                     tmpFileName;
-    for(counter = 0; counter != listOfFiles.size(); ++counter)
+    for(counter = 0; counter != dir.entryList().size(); ++counter)
     {
-        tmpFileName = this->getPath() + listOfFiles[counter];
+        tmpFileName = this->getPath() + dir.entryList().at(counter);
         mDateFile.insert(QFileInfo(tmpFileName).lastModified(),
                          tmpFileName);
     }
