@@ -9,7 +9,9 @@
 #include <QVector>
 
 
-//Settrers
+// ##########
+// ZBC_GB_TaskItemBase
+// Settrers
 void ZBC_GB_TaskItemBase::setName(const QString& _name)
 {
     if (_name != "")
@@ -36,7 +38,7 @@ void ZBC_GB_TaskItemBase::setStartTime(const QTime& _time)
 }
 
 
-//Getters
+// Getters
 QString ZBC_GB_TaskItemBase::getName() const
 { return m_strName; }
 QString ZBC_GB_TaskItemBase::getPath() const
@@ -45,7 +47,10 @@ QTime ZBC_GB_TaskItemBase::getStartTime() const
 { return m_tmeStartTime; }
 
 
-//Setter
+
+// ##########
+// ZBC_GB_TaskItemFiFo
+// Setter
 void ZBC_GB_TaskItemFiFo::setKeepDays(int _days)
 {
     if (_days >= 0)
@@ -54,12 +59,12 @@ void ZBC_GB_TaskItemFiFo::setKeepDays(int _days)
         m_bGoog = false;
 }
 
-//Getter
+// Getter
 int ZBC_GB_TaskItemFiFo::getKeepDays() const
 { return m_nKeepDays; }
 
 
-//Remove files according to policy
+// Remove files according to policy
 void ZBC_GB_TaskItemFiFo::removeFiles()
 {
 //Create map of files for current task
@@ -96,10 +101,14 @@ void ZBC_GB_TaskItemFiFo::removeFiles()
 }
 
 
-//##########
-//C-tor
+
+// ##########
+// ZBC_GB_TaskItemGFS
+// C-tor
 ZBC_GB_TaskItemGFS::ZBC_GB_TaskItemGFS(QObject *pobj) : ZBC_GB_TaskItemBase(pobj){
     m_pvecKeepTime              = new QVector<unsigned>(0);
+
+//    this->removeFiles();
 }
 
 
@@ -111,43 +120,56 @@ ZBC_GB_TaskItemGFS::~ZBC_GB_TaskItemGFS()
 }
 
 
+// Setters
 void ZBC_GB_TaskItemGFS::setKeepDays(unsigned _d)
 {
     m_pvecKeepTime->push_back(_d);
 }
-
-
 void ZBC_GB_TaskItemGFS::setKeepWeeks(unsigned _w)
 {
     m_pvecKeepTime->push_back(_w);
 }
-
-
 void ZBC_GB_TaskItemGFS::setKeepMonthes(unsigned _m)
 {
     m_pvecKeepTime->push_back(_m);
 }
 
 
-//Set vector of times for GFS
-/*
-void ZBC_GB_TaskItemGFS::setKeepTime(int _d, int _w, int _m)
-{
-    m_pvecKeepTime->clear();
-    qDebug() << _d;
-    qDebug() << _w;
-    qDebug() << _m;
-    m_pvecKeepTime->push_back(_d);
-    m_pvecKeepTime->push_back(_w);
-    m_pvecKeepTime->push_back(_m);
-}
-*/
-
-//Get vector of times for GFS
+// Get vector of times for GFS
 VecInt ZBC_GB_TaskItemGFS::getKeepTime()
 {
     return *m_pvecKeepTime;
 }
+
+
+// Remove files according to GFS policy
+void ZBC_GB_TaskItemGFS::removeFiles()
+{
+//List of dates of the files which must be
+    QList<QDate> lstLeaveDate;
+    for( int d = 0;  static_cast<unsigned>(d) != m_pvecKeepTime->at(0); ++d )
+        lstLeaveDate.push_back( QDate::currentDate().addDays(-d) );
+
+//List of files for remove
+    QDir            dir( this->getPath() );
+    dir.setNameFilters(QStringList(QString("*.zip;*.rar").split(QString(";"))));
+    QStringList     lstRemoveFile;
+    for( int counter = 0; counter != dir.entryList().size(); ++ counter )
+        if ( lstLeaveDate.indexOf(QFileInfo((this->getPath() + dir.entryList().at(counter))).lastModified().date()) == -1 )
+            lstRemoveFile.push_back(this->getPath() + dir.entryList().at(counter));
+
+//Remove files and log it
+    for (QString fName : lstRemoveFile)
+        if ( QFile::remove(fName) )
+            ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                                       ZBC_GB_Log::REMOVE,
+                                       fName);
+        else
+            ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                       ZBC_GB_Log::REMOVE,
+                                       fName);
+}
+
 
 
 // ##########
@@ -168,7 +190,7 @@ ZBC_GB_TaskVector::~ZBC_GB_TaskVector()
 }
 
 
-//Open File with settings
+// Open File with settings
 bool ZBC_GB_TaskVector::openFile()
 {
     m_strSettingsPath = QDir::currentPath() + QString("/settings.gbs");
@@ -190,7 +212,7 @@ bool ZBC_GB_TaskVector::openFile()
 }
 
 
-//Read File and push tasks pointers into vector
+// Read File and push tasks pointers into vector
 void ZBC_GB_TaskVector::pushTasks()
 {
     if ( !openFile() ){
@@ -223,10 +245,8 @@ void ZBC_GB_TaskVector::pushTasks()
             pgfs->setKeepWeeks(txtStream.readLine().toInt());
             pgfs->setKeepMonthes(txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
-            if (pgfs->isGood()){
+            if (pgfs->isGood())
                 m_pvectTasks->push_back(pgfs);
-//                qDebug() << pgfs->getKeepTime();
-            }
             else
                 delete pgfs;
 
@@ -235,7 +255,7 @@ void ZBC_GB_TaskVector::pushTasks()
 }
 
 
-//get signal from timer and compare it with time of tasks
+// Get signal from timer and compare it with time of tasks
 void ZBC_GB_TaskVector::checkTimeOfTasks()
 {
     qDebug() << QTime::currentTime().toString();
