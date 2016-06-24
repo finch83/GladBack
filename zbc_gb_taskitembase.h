@@ -69,7 +69,7 @@ public:
 //    void setKeepTime(int, int, int);
     VecInt  getKeepTime();
 
-    void removeFiles(){}
+    void removeFiles();
 
 private:
     VecInt*             m_pvecKeepTime;
