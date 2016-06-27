@@ -147,16 +147,18 @@ void ZBC_GB_TaskItemGFS::removeFiles()
 {
 //List of dates of the files which must be
     QList<QDate> lstLeaveDate;
-    for( int d = 0;  static_cast<unsigned>(d) != m_pvecKeepTime->at(0); ++d )
+    for( int d = 0;  static_cast<unsigned>(d) != m_pvecKeepTime->at(0); ++d ){
         lstLeaveDate.push_back( QDate::currentDate().addDays(-d) );
+    }
 
 //List of files for remove
     QDir            dir( this->getPath() );
     dir.setNameFilters(QStringList(QString("*.zip;*.rar").split(QString(";"))));
     QStringList     lstRemoveFile;
-    for( int counter = 0; counter != dir.entryList().size(); ++ counter )
+    for( int counter = 0; counter != dir.entryList().size(); ++ counter ){
         if ( lstLeaveDate.indexOf(QFileInfo((this->getPath() + dir.entryList().at(counter))).lastModified().date()) == -1 )
             lstRemoveFile.push_back(this->getPath() + dir.entryList().at(counter));
+    }
 
 //Remove files and log it
     for (QString fName : lstRemoveFile)
