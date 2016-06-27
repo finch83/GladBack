@@ -145,20 +145,27 @@ VecInt ZBC_GB_TaskItemGFS::getKeepTime()
 // Remove files according to GFS policy
 void ZBC_GB_TaskItemGFS::removeFiles()
 {
-//List of dates of the files which must be
+//List of dates of the files which must be...
     QList<QDate> lstLeaveDate;
-    for( int d = 0;  static_cast<unsigned>(d) != m_pvecKeepTime->at(0); ++d ){
-        lstLeaveDate.push_back( QDate::currentDate().addDays(-d) );
-    }
+    int nCounterDWM;
+//Dayly...
+    for( nCounterDWM = 0;  static_cast<unsigned>(nCounterDWM) != m_pvecKeepTime->at(0); ++nCounterDWM )
+        lstLeaveDate.push_back( QDate::currentDate().addDays(-nCounterDWM) );
+//Weekly...
+    const short WEEK_DAYS = 7;
+    if (m_pvecKeepTime->at(1) > 0)
+        for( nCounterDWM = 0; static_cast<unsigned>(nCounterDWM) != m_pvecKeepTime->at(1); ++nCounterDWM )
+            lstLeaveDate.push_back( QDate().currentDate().addDays( -QDate().currentDate().dayOfWeek() - WEEK_DAYS * nCounterDWM ));
+//Monthly...
+//...
 
 //List of files for remove
     QDir            dir( this->getPath() );
     dir.setNameFilters(QStringList(QString("*.zip;*.rar").split(QString(";"))));
     QStringList     lstRemoveFile;
-    for( int counter = 0; counter != dir.entryList().size(); ++ counter ){
+    for( int counter = 0; counter != dir.entryList().size(); ++ counter )
         if ( lstLeaveDate.indexOf(QFileInfo((this->getPath() + dir.entryList().at(counter))).lastModified().date()) == -1 )
             lstRemoveFile.push_back(this->getPath() + dir.entryList().at(counter));
-    }
 
 //Remove files and log it
     for (QString fName : lstRemoveFile)
@@ -247,11 +254,13 @@ void ZBC_GB_TaskVector::pushTasks()
             pgfs->setKeepWeeks(txtStream.readLine().toInt());
             pgfs->setKeepMonthes(txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
-            if (pgfs->isGood())
+            if (pgfs->isGood()){
                 m_pvectTasks->push_back(pgfs);
+// TEST
+                pgfs->removeFiles();
+            }
             else
                 delete pgfs;
-
         }
     }
 }
