@@ -155,9 +155,12 @@ void ZBC_GB_TaskItemGFS::removeFiles()
     const short WEEK_DAYS = 7;
     if (m_pvecKeepTime->at(1) > 0)
         for( nCounterDWM = 0; static_cast<unsigned>(nCounterDWM) != m_pvecKeepTime->at(1); ++nCounterDWM )
-            lstLeaveDate.push_back( QDate().currentDate().addDays( -QDate().currentDate().dayOfWeek() - WEEK_DAYS * nCounterDWM ));
+            lstLeaveDate.push_back( QDate::currentDate().addDays( -QDate::currentDate().dayOfWeek() - WEEK_DAYS * nCounterDWM ));
 //Monthly...
-//...
+    if (m_pvecKeepTime->at(2) > 0)
+        for( nCounterDWM = 0; static_cast<unsigned>(nCounterDWM) != m_pvecKeepTime->at(2); ++nCounterDWM )
+            lstLeaveDate.push_back(QDate(QDate::currentDate().year() ,QDate::currentDate().month(), 1).addMonths(-nCounterDWM));
+    qDebug() << lstLeaveDate;
 
 //List of files for remove
     QDir            dir( this->getPath() );
