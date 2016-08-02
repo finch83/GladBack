@@ -252,11 +252,8 @@ void ZBC_GB_TaskVector::pushTasks()
             pgfs->setKeepWeeks(txtStream.readLine().toInt());
             pgfs->setKeepMonthes(txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
-            if (pgfs->isGood()){
+            if (pgfs->isGood())
                 m_pvectTasks->push_back(pgfs);
-// TEST
-                pgfs->removeFiles();
-            }
             else
                 delete pgfs;
         }
