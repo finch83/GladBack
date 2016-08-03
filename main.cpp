@@ -7,7 +7,8 @@ SERVICE_STATUS Status;
 SERVICE_STATUS_HANDLE hStatus;
 
 #define SERVICE_NAME L"GladBack"
-
+int ARGC;
+char** ARGV;
 
 // What to do with stop signal to service
 // TODO: add info about stop service to log file
@@ -55,8 +56,10 @@ void ServiceMain()
     SetServiceStatus(hStatus, &Status);
 
 // Run сore of GladBack
+    QCoreApplication app(ARGC, ARGV);
     ZBC_GB_Core sysCore;
     sysCore.run();
+    app.exec();
 
     while(1);
 }
@@ -65,12 +68,10 @@ void ServiceMain()
 //
 int main(int argc, char** argv)
 {
+    ARGC = argc;
+    ARGV = argv;
     SERVICE_TABLE_ENTRY ServiceTable[1];
     ServiceTable[0].lpServiceName = (LPWSTR)SERVICE_NAME;
     ServiceTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTION)ServiceMain;
     StartServiceCtrlDispatcher(ServiceTable);
-
-    QCoreApplication    app(argc, argv);
-
-return app.exec();
 }

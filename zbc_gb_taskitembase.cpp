@@ -238,10 +238,18 @@ void ZBC_GB_TaskVector::pushTasks()
             pfifo->setPath(txtStream.readLine());
             pfifo->setKeepDays(txtStream.readLine().toInt());
             pfifo->setStartTime(QTime::fromString(txtStream.readLine()));
-            if (pfifo->isGood())
+            if (pfifo->isGood()){
                 m_pvectTasks->push_back(pfifo);
-            else
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                                           ZBC_GB_Log::PUSH,
+                                           pfifo->getName());
+            }
+            else{
                 delete pfifo;
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                           ZBC_GB_Log::PUSH,
+                                           pfifo->getName());
+            }
         }
         if (txtStream.readLine() == QString("GFS"))
         {
@@ -252,10 +260,18 @@ void ZBC_GB_TaskVector::pushTasks()
             pgfs->setKeepWeeks(txtStream.readLine().toInt());
             pgfs->setKeepMonthes(txtStream.readLine().toInt());
             pgfs->setStartTime(QTime::fromString(txtStream.readLine()));
-            if (pgfs->isGood())
+            if (pgfs->isGood()){
                 m_pvectTasks->push_back(pgfs);
-            else
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                                           ZBC_GB_Log::PUSH,
+                                           pgfs->getName());
+            }
+            else{
                 delete pgfs;
+                ZBC_GB_Log::Instance().log(ZBC_GB_Log::ERROR,
+                                           ZBC_GB_Log::PUSH,
+                                           pgfs->getName());
+            }
         }
     }
 }
@@ -264,7 +280,17 @@ void ZBC_GB_TaskVector::pushTasks()
 // Get signal from timer and compare it with time of tasks
 void ZBC_GB_TaskVector::checkTimeOfTasks()
 {
-    qDebug() << QTime::currentTime().toString();
+//    ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+//                               ZBC_GB_Log::PUSH,
+//                               QLatin1String("checkTimeOfTasks"));
+
+//    qDebug() << QTime::currentTime().toString();
+/*
+    ZBC_GB_Log::Instance().log(ZBC_GB_Log::SUCCESS,
+                               ZBC_GB_Log::PUSH,
+                               QTime::currentTime().toString());
+*/
+
     for( QVector<ZBC_GB_TaskItemBase*>::iterator it = m_pvectTasks->begin();
                                                  it != m_pvectTasks->end();
                                                  ++it)
