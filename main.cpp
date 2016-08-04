@@ -1,4 +1,5 @@
 #include "zbc_gb_core.h"
+#include "zbc_gb_log.h"
 
 #include <QCoreApplication>
 #include <windows.h>
