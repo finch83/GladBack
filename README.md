@@ -45,12 +45,12 @@ Windows_Server_2008R2 and Windows_7_x_64.</p>
 <b>Example settings.gbs</b><br>
 FiFo<br>
 dbMDT_KH<br>
-d:\TestFolder\dbTest1\<br>
+d:\TestFolder\dbTest1\
 20<br>
 14:41:00<br>
 GFS<br>
 dbMDT<br>
-d:\TestFolder\dbTest2\<br>
+d:\TestFolder\dbTest2\
 5<br>
 8<br>
 12<br>
