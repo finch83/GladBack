@@ -75,4 +75,10 @@ int main(int argc, char** argv)
     ServiceTable[0].lpServiceName = (LPWSTR)SERVICE_NAME;
     ServiceTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTION)ServiceMain;
     StartServiceCtrlDispatcher(ServiceTable);
+
+//Debug
+//    QCoreApplication app(ARGC, ARGV);
+//    ZBC_GB_Core sysCore;
+//    sysCore.run();
+//    app.exec();
 }
