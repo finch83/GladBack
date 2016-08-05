@@ -231,8 +231,10 @@ void ZBC_GB_TaskVector::pushTasks()
     if (!m_pvectTasks->isEmpty())
         m_pvectTasks->clear();
     QTextStream txtStream(m_pfleSettings);
+    QString strType;
     while ( !txtStream.atEnd() ){
-        if (txtStream.readLine() == QString("FiFo")){
+        strType = txtStream.readLine();
+        if (strType == QString("FiFo")){
             ZBC_GB_TaskItemFiFo* pfifo = new ZBC_GB_TaskItemFiFo(this);
             pfifo->setName(txtStream.readLine());
             pfifo->setPath(txtStream.readLine());
@@ -251,7 +253,7 @@ void ZBC_GB_TaskVector::pushTasks()
                                            pfifo->getName());
             }
         }
-        if (txtStream.readLine() == QString("GFS"))
+        if (strType == QString("GFS"))
         {
             ZBC_GB_TaskItemGFS* pgfs = new ZBC_GB_TaskItemGFS(this);
             pgfs->setName(txtStream.readLine());
