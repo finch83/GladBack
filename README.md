@@ -17,6 +17,7 @@ Windows_Server_2008R2 and Windows_7_x_64.</p>
 		<li>libgcc_s_dw2-1.dll</li>
 		<li>libstdc++-6.dll</li>
 		<li>Qt5Core.dll</li>
+		<li>libwinpthread-1.dll</li>
 	</ul>	
 <li>Open Windows console as Administrator.</li>
 <li>Run command: "sc create GladBack binpath= c:\GladBack\GladBack.exe".</li>
